@@ -5,6 +5,10 @@
 - The text chat can be disabled with the following code:
 `patch=1,EE,200B0000,extended,00000000`
 
+**How to use**
+- Press `Y` to open the text chat and start typing.
+- Press `ESC` or `ENTER` to close the chat.
+
 **Warning**
 - The code is designed to be written to memory once. Writing it via a pnach will likely result in crashing PCSX2.
 
