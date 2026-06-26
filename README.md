@@ -10,3 +10,4 @@
 
 **How to compile**
 - The text chat was written and compiles with Code Designer Lite: https://github.com/harryhardcastle/Code-Designer-Lite
+<img width="942" height="738" alt="6" src="https://github.com/user-attachments/assets/fa197f7a-de56-487a-a7d8-e696ae31e7ce" />
