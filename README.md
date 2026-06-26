@@ -1,7 +1,7 @@
 **Information**
-- Custom text chat for Syphon Filter: The Omega Strain[SCUS 97264].
+- Custom text chat for `Syphon Filter: The Omega Strain [SCUS 97264]`.
 - Chat messages are sent over the DME network.
-- The text chat code starts at 0xB0000.
+- The text chat code starts at `0xB0000`.
 - The text chat can be disabled with the following code:
 `patch=1,EE,200B0000,extended,00000000`
 
