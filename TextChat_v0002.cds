@@ -117,7 +117,7 @@ nop
 
 # Approximate life for each chat line. Decremented by FNC_TickChatFeed.
 chat_feed_timeout_ticks:
-hexcode 60
+hexcode 90
 
 # Start fading when a message has this many ticks left.
 chat_feed_timeout_ticks_fadeout:
@@ -438,11 +438,11 @@ hexcode 0
 
 
 //---------------------- keyboard handler
-FNC_KeyboardHandlerTrampoline:
+FNC_KeyboardHandler:
 andi a2, v0, $00FF
 addu a0, s1, zero
 addu a1, s0, zero
-jal :FNC_ConsoleInputShim
+jal :FNC_ConsoleInput
 nop
 
 # Default: do not trigger retail console toggle logic.
@@ -474,7 +474,7 @@ nop
 
 
 //---------------------- console input
-FNC_ConsoleInputShim:
+FNC_ConsoleInput:
 addiu sp, sp, $FFF0
 sw ra, $0000(sp)
 sw s0, $0004(sp)
@@ -705,14 +705,12 @@ beq t0, zero, :AddChatCopyNew
 nop
 
 addu a0, s4, zero
-addiu a1, s4, $0080
 jal :FNC_CopySlot128
-nop
+addiu a1, s4, $0080
 
 addu a0, s5, zero
-addiu a1, s5, $0040
 jal :FNC_CopySlot64
-nop
+addiu a1, s5, $0040
 
 lw t1, $0004(s6)
 sw t1, $0000(s6)
@@ -720,16 +718,14 @@ sw t1, $0000(s6)
 addiu s4, s4, $0080
 addiu s5, s5, $0040
 addiu s6, s6, $0004
-addiu t9, t9, $0001
 beq zero, zero, :AddChatShiftLoop
-nop
+addiu t9, t9, $0001
 
 AddChatCopyNew:
 # Copy player prefix into newest player slot as "PLAYER: ".
 addu a0, s5, zero
-addu a1, s0, zero
 jal :FNC_FormatPlayerPrefix
-nop
+addu a1, s0, zero
 
 # Copy submitted message body into newest message slot.
 addu a0, s4, zero
@@ -763,9 +759,8 @@ lw t1, $0000(a1)
 sw t1, $0000(a0)
 addiu a0, a0, $0004
 addiu a1, a1, $0004
-addiu t0, t0, $FFFF
 beq zero, zero, :CopySlotLoop
-nop
+addiu t0, t0, $FFFF
 CopySlotDone:
 jr ra
 nop
@@ -780,9 +775,8 @@ lw t1, $0000(a1)
 sw t1, $0000(a0)
 addiu a0, a0, $0004
 addiu a1, a1, $0004
-addiu t0, t0, $FFFF
 beq zero, zero, :CopySlot64Loop
-nop
+addiu t0, t0, $FFFF
 CopySlot64Done:
 jr ra
 nop
@@ -792,10 +786,8 @@ FNC_FormatPlayerPrefix:
 # In: a0 = destination 0x40-byte prefix slot, a1 = player name.
 # Out: destination contains "PLAYER: " and is null-terminated.
 beq a0, zero, :FormatPlayerDone
-nop
-beq a1, zero, :FormatPlayerEmpty
-nop
 addu t0, a0, zero
+beq a1, zero, :FormatPlayerEmpty
 addu t1, a1, zero
 # 0x3D leaves room for ':', space, and terminator in a 0x40-byte slot.
 addiu t2, zero, $003D
@@ -808,9 +800,8 @@ nop
 sb t3, $0000(t0)
 addiu t0, t0, $0001
 addiu t1, t1, $0001
-addiu t2, t2, $FFFF
 beq zero, zero, :FormatPlayerLoop
-nop
+addiu t2, t2, $FFFF
 FormatPlayerEmpty:
 addu t0, a0, zero
 FormatPlayerAppendSeparator:
@@ -830,9 +821,8 @@ FNC_StringLengthBounded:
 # In: a0 = string, a1 = max chars. Out: v0 = length up to max or null.
 addu v0, zero, zero
 beq a0, zero, :StringLengthDone
-nop
-blez a1, :StringLengthDone
 addu t0, a0, zero
+blez a1, :StringLengthDone
 addu t1, a1, zero
 StringLengthLoop:
 beq t1, zero, :StringLengthDone
@@ -842,9 +832,8 @@ beq t2, zero, :StringLengthDone
 nop
 addiu v0, v0, $0001
 addiu t0, t0, $0001
-addiu t1, t1, $FFFF
 beq zero, zero, :StringLengthLoop
-nop
+addiu t1, t1, $FFFF
 StringLengthDone:
 jr ra
 nop
@@ -852,10 +841,8 @@ nop
 //-------------------- Copy string
 FNC_CopyStringBounded:
 beq a0, zero, :CopyStringDone
-nop
-beq a1, zero, :CopyStringTerminate
-nop
 addu t0, a0, zero
+beq a1, zero, :CopyStringTerminate
 addu t1, a1, zero
 addu t2, a2, zero
 CopyStringLoop:
@@ -867,9 +854,8 @@ beq t3, zero, :CopyStringDone
 nop
 addiu t0, t0, $0001
 addiu t1, t1, $0001
-addiu t2, t2, $FFFF
 beq zero, zero, :CopyStringLoop
-nop
+addiu t2, t2, $FFFF
 CopyStringTerminate:
 sb zero, $0000(t0)
 CopyStringDone:
@@ -923,9 +909,8 @@ TickNextTimer:
 addiu t5, t5, $0004
 addiu t7, t7, $0080
 addiu t8, t8, $0040
-addiu t6, t6, $0001
 beq zero, zero, :TickTimerLoop
-nop
+addiu t6, t6, $0001
 
 TickDone:
 jr ra
@@ -1050,9 +1035,8 @@ addu a2, a3, zero
 addu a3, t0, zero
 addu t0, t1, zero
 setreg t9, :DefaultFloatValue
-lwc1 f12, $0000(t9)
 j $0036A300
-nop
+lwc1 f12, $0000(t9)
 
 
 //-------------------- Select font
@@ -1179,18 +1163,16 @@ beq t2, zero, :DrawChatNext
 nop
 
 # Draw the formatted player prefix ("PLAYER: ")
-addu a0, t1, zero
 setreg a1, :color_light_green
 jal :FNC_ApplyChatFadeAlpha
-nop
+addu a0, t1, zero
 addu a0, s0, zero
 addu a1, s7, zero
 addu a2, s1, zero
 addu a3, v0, zero
 addu t0, s3, zero
-addu t1, s4, zero
 jal :FNC_PrintTextScaled
-nop
+addu t1, s4, zero
 
 # Compute x advance for the message body using the actual rendered prefix width.
 addu a0, s7, zero
@@ -1204,18 +1186,16 @@ addu t0, s3, v0
 sw t0, $0000(sp)
 
 # Draw the message body in the existing grey fade color.
-lw a0, $0000(s5)
 setreg a1, :color_chat_dynamic
 jal :FNC_ApplyChatFadeAlpha
-nop
+lw a0, $0000(s5)
 addu a0, s0, zero
 addu a1, s6, zero
 addu a2, s1, zero
 addu a3, v0, zero
 lw t0, $0000(sp)
-addu t1, s4, zero
 jal :FNC_PrintTextScaled
-nop
+addu t1, s4, zero
 
 DrawChatNext:
 setreg t7, :chat_messageY
@@ -1224,9 +1204,8 @@ subu s4, s4, t8
 addiu s5, s5, $0004
 addiu s6, s6, $0080
 addiu s7, s7, $0040
-addiu s2, s2, $FFFF
 beq zero, zero, :DrawChatLoop
-nop
+addiu s2, s2, $FFFF
 
 DrawChatDone:
 lw ra, $0004(sp)
@@ -1317,9 +1296,8 @@ addu a2, s3, zero
 addu a3, s2, zero
 setreg t5, :console_x_pos
 lw t0, $0000(t5)
-lw t1, $0000(s6)
 jal :FNC_PrintTextScaled
-nop
+lw t1, $0000(s6)
 
 addu a0, s1, zero
 setreg a1, :cmd_buf
@@ -1330,9 +1308,8 @@ lw t0, $0000(t5)
 setreg t7, :chat_font_size
 lw t8, $0000(t7)
 addu t0, t0, t8
-lw t1, $0000(s6)
 jal :FNC_PrintTextScaled
-nop
+lw t1, $0000(s6)
 
 # Flashing cursor after the last typed character.
 setreg t0, :cursor_blink_counter
@@ -1362,9 +1339,8 @@ nop
 addu a0, s3, zero
 setreg a1, :cmd_buf
 setreg t9, :cmd_len
-lw a2, $0000(t9)
 jal $0036AA50
-nop
+lw a2, $0000(t9)
 setreg t5, :console_x_pos
 lw t0, $0000(t5)
 setreg t7, :chat_font_size
@@ -1389,9 +1365,8 @@ CursorColorDone:
 addu a0, s1, zero
 setreg a1, :cursor_string
 addu a2, s3, zero
-lw t1, $0000(s6)
 jal :FNC_PrintTextScaled
-nop
+lw t1, $0000(s6)
 SkipCursorDraw:
 
 DrawDone:
@@ -1511,10 +1486,9 @@ setreg t1, :VAR_ChatMessageStart
 lui t3, $0057
 lw t3, $1770(t3) #playerobject
 lw t3, $000C(t3) #clientID
-sw t3, $0000(t1) #save to start of packet data
 // NetSendDmeMessage
 jal $002DE880
-nop
+sw t3, $0000(t1) #save to start of packet data
 //--
 
 CMS_end:
@@ -1572,9 +1546,9 @@ print "UNKNOWN PLAYER"
 nop
 
 
-//---------------------- hooks / retail patches
+//---------------------- hooks / patches
 address $00165584
-j :FNC_KeyboardHandlerTrampoline
+j :FNC_KeyboardHandler
 nop
 // enable console
 address $00167DB8
